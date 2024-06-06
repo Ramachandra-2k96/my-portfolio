@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState }  from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
@@ -6,17 +6,28 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { motion } from 'framer-motion';
 import './Projects.css'; // Custom CSS for additional styling
+import axios from 'axios';
 
-const projects = [
-  {
-    title: "Project One",
-    description: "This is a description for project one.",
-    image: "https://via.placeholder.com/600",
-    link: "#"
-  },
-];
+
 
 const Projects = () => {
+  const [projects, setProjects] = useState([]);
+  
+  useEffect(() => {
+    // Function to fetch data from the API
+    console.log(process.env.REACT_APP_API_URL);
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}portfolio/`); // Update the URL based on your actual API endpoint
+        console.log(response.data);
+        setProjects(response.data);
+      } catch (error) {
+        console.error('Error fetching the projects:', error);
+      }
+    };
+
+    fetchProjects();
+  }, []);
   return (
     <section className="projects-section bg-black text-white min-h-screen py-12">
       <div className="container mx-auto px-6 text-center">
@@ -48,7 +59,8 @@ const Projects = () => {
                   <img src={project.image} alt={project.title} className="project-image" />
                   <div className="project-details">
                     <h2 className="text-2xl font-bold">{project.title}</h2>
-                    <p>{project.description}</p>
+                    <p className='text-lg'>{project.description}</p>
+                    <p className='text-lg font-bold'>Technology: <span className='font-normal text-red-400'>{project.technology} </span></p>
                     <a href={project.link} className="btn btn-primary">View Project</a>
                   </div>
                 </div>
